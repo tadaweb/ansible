@@ -69,6 +69,7 @@ AZURE_API_PROFILES = {
         'StorageManagementClient': '2017-10-01',
         'WebsiteManagementClient': '2016-08-01',
         'PostgreSQLManagementClient': '2017-12-01',
+        'RedisManagementClient': '2018-03-01',
         'MySQLManagementClient': '2017-12-01'
     },
 
@@ -161,6 +162,7 @@ try:
     from azure.mgmt.sql import SqlManagementClient
     from azure.mgmt.rdbms.postgresql import PostgreSQLManagementClient
     from azure.mgmt.rdbms.mysql import MySQLManagementClient
+    from azure.mgmt.redis import RedisManagementClient
     from azure.mgmt.containerregistry import ContainerRegistryManagementClient
     from azure.mgmt.containerinstance import ContainerInstanceManagementClient
 except ImportError as exc:
@@ -290,6 +292,7 @@ class AzureRMModuleBase(object):
         self._sql_client = None
         self._mysql_client = None
         self._postgresql_client = None
+        self._redis_client = None
         self._containerregistry_client = None
         self._containerinstance_client = None
         self._containerservice_client = None
@@ -875,6 +878,14 @@ class AzureRMModuleBase(object):
             self._postgresql_client = self.get_mgmt_svc_client(PostgreSQLManagementClient,
                                                                base_url=self._cloud_environment.endpoints.resource_manager)
         return self._postgresql_client
+
+    @property
+    def redis_client(self):
+        self.log('Getting Redis client')
+        if not self._redis_client:
+            self._redis_client = self.get_mgmt_svc_client(RedisManagementClient,
+                                                          base_url=self._cloud_environment.endpoints.resource_manager)
+        return self._redis_client
 
     @property
     def mysql_client(self):
